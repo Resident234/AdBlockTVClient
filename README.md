@@ -1,3 +1,17 @@
+# plan
+
+1) Recording from a microphone of fixed duration
+
+2) Fingerprinted recording file
+
+3) Get hashes , stdout hashes
+
+4) Delete recording file
+
+5) go to 1)
+
+
+
 # Android Clean - Cost Tracker
 A sample cost-tracker app that showcases my Clean architecture approach to build Android applications. It is a simple app with **core features** that include:
 
