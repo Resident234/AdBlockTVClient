@@ -12,6 +12,12 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/AppTheme.AppBarOverlay" />
 
+    <Button xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/button_start_watching"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_start_watching" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/expenses_list"
         android:layout_width="match_parent"

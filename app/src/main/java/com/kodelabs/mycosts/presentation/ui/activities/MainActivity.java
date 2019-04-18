@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.kodelabs.mycosts.R;
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     @Bind(R.id.reveal_layout)
     RevealFrameLayout mRevealLayout;
+
+    @Bind(R.id.button_start_watching)
+    Button mButtonStartWatching;
 
     private MainPresenter mMainPresenter;
 
@@ -78,6 +82,18 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                 this,
                 new CostRepositoryImpl(this)
         );
+
+        mButtonStartWatching.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                //builder.setMessage("setOnClickListener")
+                //        .show();
+
+
+
+            }
+        });
 
 
         // create a dummy account if it doesn't yet exist
@@ -151,6 +167,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     @Override
+    public void showWatcherButton() {
+        // signal the adapter that it has data to show
+        mAdapter.addWatcherButton();
+    }
+
+    @Override
     public void onClickDeleteCost(final long costId) {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -188,6 +210,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         intent.putExtra(EXTRA_COST_ID, costId);
 
         startActivityForResult(intent, EDIT_COST_REQUEST);
+    }
+
+    @Override
+    public void onClickStartWatching() {
+
     }
 
     @Override

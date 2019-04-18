@@ -15,7 +15,11 @@ public interface MainPresenter extends BasePresenter {
 
         void showCosts(List<DailyTotalCost> costs);
 
+        void showWatcherButton();
+
         void onClickDeleteCost(long costId);
+
+        void onClickStartWatching();
 
         void onClickEditCost(long costId, int position);
 

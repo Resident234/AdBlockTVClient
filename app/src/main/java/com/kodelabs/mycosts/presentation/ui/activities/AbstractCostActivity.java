@@ -1,5 +1,6 @@
 package com.kodelabs.mycosts.presentation.ui.activities;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.kodelabs.mycosts.R;
 import com.kodelabs.mycosts.presentation.ui.fragments.DatePickerFragment;
@@ -48,6 +51,9 @@ public abstract class AbstractCostActivity extends AppCompatActivity
     @Bind(R.id.input_cost_category)
     Spinner mCategorySpinner;
 
+    @Bind(R.id.button_start_watching)
+    Button mButtonStartWatching;
+
     protected Date   mSelectedDate;
     protected String mDescription;
     protected String mCategory;
@@ -67,7 +73,6 @@ public abstract class AbstractCostActivity extends AppCompatActivity
                 onBackPressed();
             }
         });
-
 
         mRevealLayout.setVisibility(View.VISIBLE);
     }

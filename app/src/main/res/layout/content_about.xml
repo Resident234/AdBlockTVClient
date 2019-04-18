@@ -28,7 +28,7 @@
         android:layout_below="@id/made_by_textview"
         android:layout_centerHorizontal="true"
         android:autoLink="web"
-        android:text="@string/kodelabs_website"
+        android:text="@string/gsu_website"
         android:textSize="20sp"
         android:textStyle="bold" />
 

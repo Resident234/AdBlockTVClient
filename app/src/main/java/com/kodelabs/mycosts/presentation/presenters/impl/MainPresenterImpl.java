@@ -73,6 +73,7 @@ public class MainPresenterImpl extends AbstractPresenter implements MainPresente
     public void onCostsRetrieved(List<Cost> costList) {
         List<DailyTotalCost> dailyTotalCosts = DailyTotalCostConverter.convertCostsToDailyCosts(costList);
         mView.showCosts(dailyTotalCosts);
+        mView.showWatcherButton();
     }
 
     @Override
