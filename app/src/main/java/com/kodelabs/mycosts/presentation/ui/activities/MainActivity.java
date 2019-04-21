@@ -31,6 +31,7 @@ import com.kodelabs.mycosts.threading.MainThreadImpl;
 
 import java.util.List;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     public static final int EDIT_COST_REQUEST = 0;
     public static boolean isWatching = false;
+    public static boolean isRecording = false;
+    public static int intDelayMillis = 200;
 
     //private static class DelayHandler extends Handler {}
     //private final DelayHandler mHandler = new DelayHandler();
@@ -62,40 +65,110 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     private MainPresenter mMainPresenter;
 
     private CostItemAdapter mAdapter;
+    //private Mp3Recorder recorder;
 
     private static class MyHandler extends Handler {}
     private final MyHandler mHandler = new MyHandler();
 
     public static class MyRunnable implements Runnable {
         private final WeakReference<Activity> mActivity;
+        private final WeakReference<Mp3Recorder> mRecorder;
 
-        public MyRunnable(Activity activity) {
+
+        public MyRunnable(Activity activity, Mp3Recorder recorder) {
             mActivity = new WeakReference<>(activity);
+            mRecorder = new WeakReference<>(recorder);
         }
 
         @Override
         public void run() {
             Activity activity = mActivity.get();
+            Mp3Recorder recorder = mRecorder.get();
             if (activity != null) {
                 TextView mWatchingTextView = (TextView) activity.findViewById(R.id.watching_text_view);
-                mWatchingTextView.setText("stop");
+                //mWatchingTextView.setText("stop");
+
+                if(isRecording) {
+                    recorder.stopRecording();
+                    intDelayMillis = 200;
+                } else {
+                    recorder.startRecording();
+                    intDelayMillis = 2000;
+                }
 
                 if(isWatching) {
-                    mWatchingTextView.setText("start");
+                    //mWatchingTextView.setText("start");
                     MyHandler mHandler = new MyHandler();
-                    mHandler.postDelayed(this, 2000);
+                    mHandler.postDelayed(this, intDelayMillis);
+                } else {
+                    recorder.stopRecording();
                 }
             }
         }
     }
 
-    private void watching() {
-        mWatchingTextView.setText("start");
-        mHandler.postDelayed(mRunnable, 2000);
+
+    // --- recognize ---
+    /*
+    private static int chunksize = 8192;
+    private static int channels = 2;
+    private static int samplerate = 44100;
+    private static Array data[];
+    private static Object stream;
+
+
+
+    private static void recognize(int seconds) {
+        start_recording();
+        for(int i = 0; i < (samplerate / chunksize * seconds); i++) {
+            process_recording();
+        }
+        stop_recording();
+        recognize_recording();
+    }
+
+    private static void start_recording() {
+        recorder.startRecording();
+
+        if(stream) {
+            stream.stop_stream();
+            stream.close();
+        }
+
+        stream = self.audio.open(
+                format=self.default_format,
+                channels=channels,
+                rate=samplerate,
+                input=True,
+                frames_per_buffer=chunksize,
+                )
+
+        self.data = [[] for i in range(channels)]
+    }
+
+    private static void process_recording() {
 
     }
 
-    private MyRunnable mRunnable = new MyRunnable(this);
+    private static void stop_recording() {
+        recorder.stopRecording();
+    }
+
+    private static void recognize_recording() {
+
+    }*/
+
+    // --- recognize ---
+
+
+
+    private void watching() {
+        //mWatchingTextView.setText("start");
+        mHandler.postDelayed(mRunnable, intDelayMillis);
+    }
+
+    private final Mp3Recorder recorder = new Mp3Recorder();
+    private MyRunnable mRunnable = new MyRunnable(this, recorder);
 
 
 
@@ -115,10 +188,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         // setup recycler view adapter
         mAdapter = new CostItemAdapter(this, this);
-
-        //final Mp3Recorder recorder = new Mp3Recorder();
-        //recorder.startRecording();
-        //recorder.stopRecording();
+        //recorder = new Mp3Recorder();
 
 
         // setup recycler view
