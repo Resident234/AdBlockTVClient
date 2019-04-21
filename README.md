@@ -12,6 +12,20 @@
 
 
 
+AdBlockTV
+
+Клиент : 
+!) Пишем отрезок с микрофона , сохраняем в mp3
+2) Получаем отпечаток и хеш
+3) Выводим в текстовое поле
+
+ПОвторяем в цикле , пока одним потоком
+
+Старт и остановка по тапу на одну и ту же кнопку
+
+Сверить отпечатки на кленте и на сервере
+
+
 # Android Clean - Cost Tracker
 A sample cost-tracker app that showcases my Clean architecture approach to build Android applications. It is a simple app with **core features** that include:
 

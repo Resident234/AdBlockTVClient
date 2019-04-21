@@ -1,9 +1,11 @@
 package com.kodelabs.mycosts.presentation.ui.activities;
 
 import android.app.AlertDialog;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import com.kodelabs.mycosts.R;
 import com.kodelabs.mycosts.domain.executor.impl.ThreadExecutor;
@@ -27,6 +30,7 @@ import com.kodelabs.mycosts.sync.auth.DummyAccountProvider;
 import com.kodelabs.mycosts.threading.MainThreadImpl;
 
 import java.util.List;
+import java.lang.ref.WeakReference;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,6 +42,10 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     public static final String EXTRA_COST_ID = "extra_cost_id_key";
 
     public static final int EDIT_COST_REQUEST = 0;
+    public static boolean isWatching = false;
+
+    //private static class DelayHandler extends Handler {}
+    //private final DelayHandler mHandler = new DelayHandler();
 
     @Bind(R.id.expenses_list)
     RecyclerView mRecyclerView;
@@ -48,9 +56,48 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @Bind(R.id.button_start_watching)
     Button mButtonStartWatching;
 
+    @Bind(R.id.watching_text_view)
+    TextView mWatchingTextView;
+
     private MainPresenter mMainPresenter;
 
     private CostItemAdapter mAdapter;
+
+    private static class MyHandler extends Handler {}
+    private final MyHandler mHandler = new MyHandler();
+
+    public static class MyRunnable implements Runnable {
+        private final WeakReference<Activity> mActivity;
+
+        public MyRunnable(Activity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void run() {
+            Activity activity = mActivity.get();
+            if (activity != null) {
+                TextView mWatchingTextView = (TextView) activity.findViewById(R.id.watching_text_view);
+                mWatchingTextView.setText("stop");
+
+                if(isWatching) {
+                    mWatchingTextView.setText("start");
+                    MyHandler mHandler = new MyHandler();
+                    mHandler.postDelayed(this, 2000);
+                }
+            }
+        }
+    }
+
+    private void watching() {
+        mWatchingTextView.setText("start");
+        mHandler.postDelayed(mRunnable, 2000);
+
+    }
+
+    private MyRunnable mRunnable = new MyRunnable(this);
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +109,17 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         init();
     }
 
+
+
     private void init() {
 
         // setup recycler view adapter
         mAdapter = new CostItemAdapter(this, this);
+
+        //final Mp3Recorder recorder = new Mp3Recorder();
+        //recorder.startRecording();
+        //recorder.stopRecording();
+
 
         // setup recycler view
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -86,10 +140,14 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         mButtonStartWatching.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                //builder.setMessage("setOnClickListener")
-                //        .show();
 
+                if(isWatching) {
+                    isWatching = false;
+                    //watchingThread.stop();
+                } else {
+                    isWatching = true;
+                    watching();
+                }
 
 
             }
