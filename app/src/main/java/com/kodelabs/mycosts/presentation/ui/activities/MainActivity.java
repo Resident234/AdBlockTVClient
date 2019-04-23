@@ -73,17 +73,20 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     public static class MyRunnable implements Runnable {
         private final WeakReference<Activity> mActivity;
         private final WeakReference<Mp3Recorder> mRecorder;
+        private final WeakReference<AudioRecognizerWindow> mAudioRecognizer;
 
 
-        public MyRunnable(Activity activity, Mp3Recorder recorder) {
+        public MyRunnable(Activity activity, Mp3Recorder recorder, AudioRecognizerWindow audioRecognizer) {
             mActivity = new WeakReference<>(activity);
             mRecorder = new WeakReference<>(recorder);
+            mAudioRecognizer = new WeakReference<>(audioRecognizer);
         }
 
         @Override
         public void run() {
             Activity activity = mActivity.get();
             Mp3Recorder recorder = mRecorder.get();
+            AudioRecognizerWindow audioRecognizer = mAudioRecognizer.get();
             if (activity != null) {
                 TextView mWatchingTextView = (TextView) activity.findViewById(R.id.watching_text_view);
                 //mWatchingTextView.setText("stop");
@@ -91,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                 if(isRecording) {
                     recorder.stopRecording();
                     intDelayMillis = 200;
+                    audioRecognizer.listenSound();
+                    // send hashes to rest
                 } else {
                     recorder.startRecording();
                     intDelayMillis = 2000;
@@ -109,6 +114,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
 
     // --- recognize ---
+
+
+
     /*
     private static int chunksize = 8192;
     private static int channels = 2;
@@ -168,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
     private final Mp3Recorder recorder = new Mp3Recorder();
+    private final Mp3Recorder audioRecognizer = new AudioRecognizerWindow();
     private MyRunnable mRunnable = new MyRunnable(this, recorder);
 
 
