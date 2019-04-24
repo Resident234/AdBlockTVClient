@@ -1,5 +1,5 @@
 package com.kodelabs.mycosts.presentation.ui.activities;
-
+/*
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
@@ -491,3 +491,4 @@ public class AudioRecognizerWindow extends JFrame {
         this.setVisible(true);
     }
 }
+*/

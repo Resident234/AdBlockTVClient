@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import android.widget.TextView;
+import android.util.Log;
 
 import com.kodelabs.mycosts.R;
 import com.kodelabs.mycosts.domain.executor.impl.ThreadExecutor;
@@ -30,8 +31,10 @@ import com.kodelabs.mycosts.sync.auth.DummyAccountProvider;
 import com.kodelabs.mycosts.threading.MainThreadImpl;
 
 import java.util.List;
+import java.util.Calendar;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
+import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -41,6 +44,7 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity implements MainPresenter.View {
 
     public static final String EXTRA_COST_ID = "extra_cost_id_key";
+    private static final String TAG = "MainActivity";
 
     public static final int EDIT_COST_REQUEST = 0;
     public static boolean isWatching = false;
@@ -72,32 +76,47 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     public static class MyRunnable implements Runnable {
         private final WeakReference<Activity> mActivity;
-        private final WeakReference<Mp3Recorder> mRecorder;
-        private final WeakReference<AudioRecognizerWindow> mAudioRecognizer;
+        //private final WeakReference<Mp3Recorder> mRecorder;
+        //private final WeakReference<AudioRecognizerWindow> mAudioRecognizer;
 
 
-        public MyRunnable(Activity activity, Mp3Recorder recorder, AudioRecognizerWindow audioRecognizer) {
+        public MyRunnable(Activity activity) {//, Mp3Recorder recorder , AudioRecognizerWindow audioRecognizer
             mActivity = new WeakReference<>(activity);
-            mRecorder = new WeakReference<>(recorder);
-            mAudioRecognizer = new WeakReference<>(audioRecognizer);
+            //mRecorder = new WeakReference<>(recorder);
+            //mAudioRecognizer = new WeakReference<>(audioRecognizer);
         }
 
         @Override
         public void run() {
             Activity activity = mActivity.get();
-            Mp3Recorder recorder = mRecorder.get();
-            AudioRecognizerWindow audioRecognizer = mAudioRecognizer.get();
+            //Mp3Recorder recorder = mRecorder.get();
+            Calendar rightNow = Calendar.getInstance();
+            //AudioRecognizerWindow audioRecognizer = mAudioRecognizer.get();
             if (activity != null) {
                 TextView mWatchingTextView = (TextView) activity.findViewById(R.id.watching_text_view);
                 //mWatchingTextView.setText("stop");
 
                 if(isRecording) {
-                    recorder.stopRecording();
+                    /*try {
+                        recorder.stopRecording();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }*/
+
+                    Log.i(TAG,  rightNow.getTimeInMillis() + " stopRecording");
+                    isRecording = false;
                     intDelayMillis = 200;
-                    audioRecognizer.listenSound();
+                    //audioRecognizer.listenSound();
                     // send hashes to rest
                 } else {
-                    recorder.startRecording();
+                    /*try {
+                        recorder.startRecording();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }*/
+
+                    Log.i(TAG,  rightNow.getTimeInMillis() + " startRecording");
+                    isRecording = true;
                     intDelayMillis = 2000;
                 }
 
@@ -106,7 +125,12 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                     MyHandler mHandler = new MyHandler();
                     mHandler.postDelayed(this, intDelayMillis);
                 } else {
-                    recorder.stopRecording();
+                    /*try {
+                        recorder.stopRecording();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }*/
+                    Log.i(TAG,  rightNow.getTimeInMillis() + " stopRecording");
                 }
             }
         }
@@ -175,9 +199,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         mHandler.postDelayed(mRunnable, intDelayMillis);
     }
 
-    private final Mp3Recorder recorder = new Mp3Recorder();
-    private final Mp3Recorder audioRecognizer = new AudioRecognizerWindow();
-    private MyRunnable mRunnable = new MyRunnable(this, recorder);
+    //private final Mp3Recorder recorder = new Mp3Recorder();
+    //private final Mp3Recorder audioRecognizer = new AudioRecognizerWindow();
+    private MyRunnable mRunnable = new MyRunnable(this); //, recorder
 
 
 

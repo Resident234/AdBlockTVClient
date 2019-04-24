@@ -1,6 +1,6 @@
 package com.kodelabs.mycosts.presentation.ui.activities;
 
-
+/*
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
@@ -17,7 +17,7 @@ public class SpectrumView extends javax.swing.JFrame {
 
     /**
      * Creates a new instance of Java2DFrame
-     */
+     * /
     public SpectrumView(Complex[][] results, int size, double highscores[][],
                         double recordPoints[][]) {
         this.results = results;
@@ -33,7 +33,7 @@ public class SpectrumView extends javax.swing.JFrame {
      *
      * @param g
      *            The graphics object
-     */
+     * /
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
 
@@ -53,7 +53,7 @@ public class SpectrumView extends javax.swing.JFrame {
                 g2d.setColor(new Color(0, (int) magnitude * 10,
                         (int) magnitude * 20));
 
-//				if (freq < 300 /* && recordPoints[i][freq] == 1 */) {
+//				if (freq < 300 /* && recordPoints[i][freq] == 1 * /) {
 //					g2d.setColor(Color.RED);
 //				}
 
@@ -62,7 +62,7 @@ public class SpectrumView extends javax.swing.JFrame {
                         blockSizeX, blockSizeY);
 
                 // I used a improviced logarithmic scale and normal scale:
-                if (/* logModeEnabled */false && (Math.log10(line) * Math
+                if (/* logModeEnabled * /false && (Math.log10(line) * Math
                         .log10(line)) > 1) {
                     freq += (int) (Math.log10(line) * Math.log10(line));
                 } else {
@@ -73,3 +73,4 @@ public class SpectrumView extends javax.swing.JFrame {
     }
 
 }
+*/
