@@ -29,6 +29,7 @@ import com.kodelabs.mycosts.presentation.ui.adapters.CostItemAdapter;
 import com.kodelabs.mycosts.storage.CostRepositoryImpl;
 import com.kodelabs.mycosts.sync.auth.DummyAccountProvider;
 import com.kodelabs.mycosts.threading.MainThreadImpl;
+import com.kodelabs.mycosts.presentation.ui.activities.Mp3Recorder;
 
 import java.util.List;
 import java.util.Calendar;
@@ -69,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     private MainPresenter mMainPresenter;
 
     private CostItemAdapter mAdapter;
-    //private Mp3Recorder recorder;
+    private static Mp3Recorder recorder = new Mp3Recorder();
+    //Mp3Recorder recorder = new Mp3Recorder();
 
     private static class MyHandler extends Handler {}
     private final MyHandler mHandler = new MyHandler();
@@ -88,8 +90,10 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         @Override
         public void run() {
+            Log.i(TAG,  "run");
+
             Activity activity = mActivity.get();
-            //Mp3Recorder recorder = mRecorder.get();
+
             Calendar rightNow = Calendar.getInstance();
             //AudioRecognizerWindow audioRecognizer = mAudioRecognizer.get();
             if (activity != null) {
@@ -97,11 +101,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                 //mWatchingTextView.setText("stop");
 
                 if(isRecording) {
-                    /*try {
+                    try {
                         recorder.stopRecording();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }*/
+                    }
 
                     Log.i(TAG,  rightNow.getTimeInMillis() + " stopRecording");
                     isRecording = false;
@@ -109,11 +113,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                     //audioRecognizer.listenSound();
                     // send hashes to rest
                 } else {
-                    /*try {
+                    try {
                         recorder.startRecording();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }*/
+                    }
 
                     Log.i(TAG,  rightNow.getTimeInMillis() + " startRecording");
                     isRecording = true;
@@ -125,11 +129,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                     MyHandler mHandler = new MyHandler();
                     mHandler.postDelayed(this, intDelayMillis);
                 } else {
-                    /*try {
+                    try {
                         recorder.stopRecording();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }*/
+                    }
                     Log.i(TAG,  rightNow.getTimeInMillis() + " stopRecording");
                 }
             }
@@ -195,13 +199,14 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
 
     private void watching() {
+
+
         //mWatchingTextView.setText("start");
         mHandler.postDelayed(mRunnable, intDelayMillis);
     }
 
-    //private final Mp3Recorder recorder = new Mp3Recorder();
     //private final Mp3Recorder audioRecognizer = new AudioRecognizerWindow();
-    private MyRunnable mRunnable = new MyRunnable(this); //, recorder
+    private MyRunnable mRunnable = new MyRunnable(this); //
 
 
 
@@ -221,8 +226,8 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
         // setup recycler view adapter
         mAdapter = new CostItemAdapter(this, this);
-        //recorder = new Mp3Recorder();
 
+        //recorder = new Mp3Recorder();
 
         // setup recycler view
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
