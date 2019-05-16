@@ -2,10 +2,12 @@ package com.kodelabs.mycosts.presentation.ui.activities;
 
 import android.app.AlertDialog;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +32,8 @@ import com.kodelabs.mycosts.storage.CostRepositoryImpl;
 import com.kodelabs.mycosts.sync.auth.DummyAccountProvider;
 import com.kodelabs.mycosts.threading.MainThreadImpl;
 import com.kodelabs.mycosts.presentation.ui.activities.Mp3Recorder;
+import com.kodelabs.mycosts.utils.Permission;
+import com.kodelabs.mycosts.interfaces.Constant;
 
 import java.util.List;
 import java.util.Calendar;
@@ -42,7 +46,9 @@ import butterknife.ButterKnife;
 import io.codetail.widget.RevealFrameLayout;
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity implements MainPresenter.View {
+
+
+public class MainActivity extends AppCompatActivity implements MainPresenter.View, Constant {//
 
     public static final String EXTRA_COST_ID = "extra_cost_id_key";
     private static final String TAG = "MainActivity";
@@ -51,9 +57,11 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     public static boolean isWatching = false;
     public static boolean isRecording = false;
     public static int intDelayMillis = 200;
+    public static boolean allowRECORD_AUDIO = false;
 
     //private static class DelayHandler extends Handler {}
     //private final DelayHandler mHandler = new DelayHandler();
+
 
     @Bind(R.id.expenses_list)
     RecyclerView mRecyclerView;
@@ -72,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     private CostItemAdapter mAdapter;
     private static Mp3Recorder recorder = new Mp3Recorder();
     //Mp3Recorder recorder = new Mp3Recorder();
+
 
     private static class MyHandler extends Handler {}
     private final MyHandler mHandler = new MyHandler();
@@ -141,63 +150,6 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     }
 
 
-    // --- recognize ---
-
-
-
-    /*
-    private static int chunksize = 8192;
-    private static int channels = 2;
-    private static int samplerate = 44100;
-    private static Array data[];
-    private static Object stream;
-
-
-
-    private static void recognize(int seconds) {
-        start_recording();
-        for(int i = 0; i < (samplerate / chunksize * seconds); i++) {
-            process_recording();
-        }
-        stop_recording();
-        recognize_recording();
-    }
-
-    private static void start_recording() {
-        recorder.startRecording();
-
-        if(stream) {
-            stream.stop_stream();
-            stream.close();
-        }
-
-        stream = self.audio.open(
-                format=self.default_format,
-                channels=channels,
-                rate=samplerate,
-                input=True,
-                frames_per_buffer=chunksize,
-                )
-
-        self.data = [[] for i in range(channels)]
-    }
-
-    private static void process_recording() {
-
-    }
-
-    private static void stop_recording() {
-        recorder.stopRecording();
-    }
-
-    private static void recognize_recording() {
-
-    }*/
-
-    // --- recognize ---
-
-
-
     private void watching() {
 
 
@@ -207,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
 
     //private final Mp3Recorder audioRecognizer = new AudioRecognizerWindow();
     private MyRunnable mRunnable = new MyRunnable(this); //
+    private Permission mPermission = new Permission(this);
 
 
 
@@ -218,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
         Timber.w("ONCREATE");
 
         init();
+
     }
 
 
@@ -245,6 +199,20 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                 new CostRepositoryImpl(this)
         );
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (mPermission.checkPermissionForRECORD_AUDIO() == true) {
+                allowRECORD_AUDIO = true;
+                Log.i(TAG,  "if1");
+            } else {
+                allowRECORD_AUDIO = false;
+                Log.i(TAG,  "if2");
+            }
+        } else {
+            allowRECORD_AUDIO = true;
+            Log.i(TAG,  "if3");
+        }
+        allowRECORD_AUDIO = true; //TODO: tmp
+
         mButtonStartWatching.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -254,7 +222,9 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
                     //watchingThread.stop();
                 } else {
                     isWatching = true;
-                    watching();
+                    if(allowRECORD_AUDIO){
+                        watching();
+                    }
                 }
 
 
@@ -396,4 +366,34 @@ public class MainActivity extends AppCompatActivity implements MainPresenter.Vie
     @Override
     public void showError(String message) {
     }
+
+
+    // Request Call Back Method To check permission is granted by user or not for MarshMallow...
+    /*@Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case COMMON_PERMISSION_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    // This method will be executed once the timer is over
+                    // Start your app main activity
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    finish();
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }*/
+
+
 }

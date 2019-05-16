@@ -13,6 +13,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
+import com.kodelabs.mycosts.lame.SimpleLame;
+
 public class DataEncodeThread extends Thread implements AudioRecord.OnRecordPositionUpdateListener {
 
     private static final String TAG = DataEncodeThread.class.getSimpleName();

@@ -1,4 +1,4 @@
-package com.kodelabs.mycosts.presentation.ui.activities;
+package com.kodelabs.mycosts.lame;
 
 /**
  * LAME interface class
